@@ -52,6 +52,7 @@ def get_adjustment_input(mode):
             print("Invalid value. Please enter a valid number.")
 
 def main():
+    last_hex_color = None 
     while True:
         mode = get_mode_input()
         if mode == 'r': continue
@@ -60,14 +61,21 @@ def main():
         adjustment = get_adjustment_input(mode) if mode != 'r' else 0
 
         while True:
-            hex_color = input("Enter a hex color code (or 'e' to exit, 'r' to reset): ").strip().lstrip('#')
-            if hex_color.lower() in ['e', 'r']: 
+            hex_color = input("Enter a hex color code (or 'e' to exit, 'r' to reset, 'a' to apply last color): ").strip().lstrip('#')
+            if hex_color.lower() in ['e', 'r']:
                 if hex_color.lower() == 'e': return
                 break
+            elif hex_color.lower() == 'a':
+                if last_hex_color:
+                    hex_color = last_hex_color
+                else:
+                    print("No last color to apply.")
+                    continue
 
             try:
                 adjustments = {'h': {'hue_shift': adjustment}, 's': {'saturation_change': adjustment}, 'b': {'brightness_change': adjustment}}
                 new_hex_color = adjust_hsv(hex_color, **adjustments.get(mode, {}))
+                last_hex_color = new_hex_color 
                 print("New Hex Color Code: " + new_hex_color.upper())
             except ValueError:
                 print("Invalid hex color code. Please enter a valid hex color code.")
